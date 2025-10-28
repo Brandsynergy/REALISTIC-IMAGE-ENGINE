@@ -1,0 +1,291 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    opacity: 0.95;
+    font-weight: 300;
+}
+
+/* Upload Section */
+.upload-section {
+    margin-bottom: 40px;
+}
+
+.upload-box {
+    background: white;
+    border: 3px dashed #2a5298;
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-box:hover {
+    border-color: #7e22ce;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.upload-box svg {
+    color: #2a5298;
+    margin-bottom: 20px;
+}
+
+.upload-box h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.upload-box p {
+    color: #666;
+    font-size: 1rem;
+}
+
+/* Preview Section */
+.preview-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.image-container {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+.image-container h3 {
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    display: block;
+}
+
+#enhancedContainer {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    border-radius: 10px;
+}
+
+.placeholder-text {
+    color: #999;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Enhancement Options */
+.enhancement-options {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+.enhancement-options h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2rem;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.option-card {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+    border: none;
+    border-radius: 15px;
+    padding: 30px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    text-align: center;
+}
+
+.option-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(126, 34, 206, 0.5);
+}
+
+.option-card .icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.option-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+.option-card p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 15px;
+}
+
+.option-card .tech {
+    display: block;
+    font-size: 0.75rem;
+    opacity: 0.8;
+    font-weight: bold;
+    font-style: italic;
+}
+
+/* Loading */
+.loading {
+    background: white;
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #2a5298;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading p {
+    color: #333;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.loading-subtext {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Download Section */
+.download-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.download-btn {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 18px 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.download-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(126, 34, 206, 0.5);
+}
+
+.secondary-btn {
+    background: white;
+    color: #2a5298;
+    border: 2px solid #2a5298;
+    border-radius: 50px;
+    padding: 15px 35px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin-left: 15px;
+}
+
+.secondary-btn:hover {
+    background: #2a5298;
+    color: white;
+}
+
+/* Error Message */
+.error-message {
+    background: #ff4757;
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(255, 71, 87, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .preview-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .secondary-btn {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+}
