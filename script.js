@@ -3,38 +3,8 @@
 // ============================================
 const CONFIG = {
     // 🔑 PASTE YOUR REPLICATE API KEY BELOW (between the quotes)
-    REPLICATE_API_KEY: 'r8_5C6elh8k2MVRHayUa421olsnwB733aB2jk7ld'                    
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-  ,
-
-    // ⭐ PROFESSIONAL AI MODELS - ENHANCOR Quality ⭐
+    REPLICATE_API_KEY: 'r8_5C6elh8k2MVRHayUa421olsnwB733aB2jk7ld',                    
+ // ⭐ PROFESSIONAL AI MODELS - ENHANCOR Quality ⭐
     MODELS: {
         // GFPGAN - Professional face restoration (~$0.01/image)
         skin: 'tencentarc/gfpgan:9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3',
