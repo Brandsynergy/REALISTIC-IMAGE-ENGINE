@@ -3,7 +3,36 @@
 // ============================================
 const CONFIG = {
     // 🔑 PASTE YOUR REPLICATE API KEY BELOW (between the quotes)
-    REPLICATE_API_KEY: 'YOUR_REPLICATE_API_KEY_HERE',
+    REPLICATE_API_KEY: 'r8_5C6elh8k2MVRHayUa421olsnwB733aB2jk7ld'                    
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+  ,
 
     // ⭐ PROFESSIONAL AI MODELS - ENHANCOR Quality ⭐
     MODELS: {
