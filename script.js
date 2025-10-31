@@ -1,18 +1,18 @@
 // ============================================
-// REALISTIC IMAGE ENGINE - FINAL VERSION
+// REALISTIC IMAGE ENGINE - FINAL WORKING VERSION
 // ============================================
 
 console.log('%c⚡ REALISTIC IMAGE ENGINE', 'color: #667eea; font-size: 20px; font-weight: bold;');
 
-// Configuration
+// Configuration with CORRECT model versions
 const CONFIG = {
     MODELS: {
-        skin: '9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3',
-        upscale: '42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b',
-        enhance: '42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b',
-        face: '9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3',
-        denoise: '7de2ea26c616d5bf2245ad0d5e24f0ff9a6204578a5c876db53142edd9d2cd56',
-        combo: '7de2ea26c616d5bf2245ad0d5e24f0ff9a6204578a5c876db53142edd9d2cd56'
+        skin: '9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3',      // GFPGAN
+        upscale: '42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b',   // Real-ESRGAN
+        enhance: '42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b',  // Real-ESRGAN
+        face: '9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3',     // GFPGAN
+        denoise: '7de2ea26c616d5bf2245ad0d5e24f0ff9a6204578a5c876db53142edd9d2cd56',  // CodeFormer
+        combo: '7de2ea26c616d5bf2245ad0d5e24f0ff9a6204578a5c876db53142edd9d2cd56'    // CodeFormer
     }
 };
 
@@ -193,36 +193,44 @@ async function enhanceImage(type) {
 }
 
 async function createPrediction(modelVersion, imageUrl, type) {
-    let inputParams = { image: imageUrl };
+    let inputParams = {};
 
-    switch(type) {
-        case 'upscale':
-            inputParams.scale = 4;
-            inputParams.face_enhance = true;
-            break;
-        case 'skin':
-        case 'face':
-            inputParams.version = '1.4';
-            inputParams.scale = 2;
-            break;
-        case 'denoise':
-            inputParams.codeformer_fidelity = 0.7;
-            inputParams.background_enhance = true;
-            inputParams.face_upsample = true;
-            inputParams.upscale = 2;
-            break;
-        case 'combo':
-            inputParams.codeformer_fidelity = 0.8;
-            inputParams.background_enhance = true;
-            inputParams.face_upsample = true;
-            inputParams.upscale = 4;
-            break;
-        default:
-            inputParams.scale = 2;
-            inputParams.face_enhance = true;
+    // CORRECT parameters for each model type
+    if (type === 'skin' || type === 'face') {
+        // GFPGAN model parameters
+        inputParams = {
+            img: imageUrl,
+            version: "v1.4",
+            scale: 2
+        };
+    } else if (type === 'upscale' || type === 'enhance') {
+        // Real-ESRGAN model parameters
+        inputParams = {
+            image: imageUrl,
+            scale: 4,
+            face_enhance: true
+        };
+    } else if (type === 'denoise') {
+        // CodeFormer model parameters
+        inputParams = {
+            image: imageUrl,
+            codeformer_fidelity: 0.7,
+            background_enhance: true,
+            face_upsample: true,
+            upscale: 2
+        };
+    } else if (type === 'combo') {
+        // CodeFormer model parameters (maximum quality)
+        inputParams = {
+            image: imageUrl,
+            codeformer_fidelity: 0.9,
+            background_enhance: true,
+            face_upsample: true,
+            upscale: 4
+        };
     }
 
-    console.log('📤 Sending request to server proxy...');
+    console.log('📤 Sending request with parameters:', inputParams);
 
     const response = await fetch('/api/replicate', {
         method: 'POST',
@@ -360,7 +368,15 @@ function resetApp() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-console.log('✅ Script loaded successfully');                                                                                                                                            
+console.log('✅ Script loaded successfully');                                                                                                                                                                                                                                                                                                         
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
