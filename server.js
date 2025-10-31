@@ -1,5 +1,6 @@
 import express from 'express';
 import multer from 'multer';
+import FormData from 'form-data';
 import fetch from 'node-fetch';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -29,23 +30,28 @@ app.post('/api/enhance', upload.single('file'), async (req, res) => {
         
         console.log('Calling Claid API with operations:', operations);
         
-        // Convert image buffer to base64
-        const base64Image = req.file.buffer.toString('base64');
+        // Create form data for Claid API
+        const formData = new FormData();
         
-        // Create the request body for Claid API
-        const requestBody = {
-            input: `data:${req.file.mimetype};base64,${base64Image}`,
+        // Add the image file
+        formData.append('file', req.file.buffer, {
+            filename: 'image.jpg',
+            contentType: req.file.mimetype
+        });
+        
+        // Add operations as a JSON string in the 'data' field
+        formData.append('data', JSON.stringify({
             operations: operations
-        };
+        }));
         
         // Call Claid API
         const response = await fetch('https://api.claid.ai/v1-beta1/image/edit', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
+                ...formData.getHeaders()
             },
-            body: JSON.stringify(requestBody)
+            body: formData
         });
         
         if (!response.ok) {
@@ -58,7 +64,7 @@ app.post('/api/enhance', upload.single('file'), async (req, res) => {
         }
         
         const result = await response.json();
-        console.log('Enhancement successful');
+        console.log('Enhancement successful:', JSON.stringify(result, null, 2));
         
         res.json(result);
         
@@ -75,7 +81,10 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log('API Key loaded:', process.env.CLAID_API_KEY ? 'Yes' : 'No');
-});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+  
+  
+  
   
   
   
