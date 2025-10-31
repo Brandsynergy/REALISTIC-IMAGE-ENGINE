@@ -1,21 +1,79 @@
 const express = require('express');
-const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
-// Enable CORS
-app.use(cors());
+// Middleware
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Serve static files (HTML, CSS, JS, images)
-app.use(express.static(__dirname));
+// Serve static files
+app.use(express.static(path.join(__dirname)));
 
-// API endpoint to get the API key securely
-app.get('/api/config', (req, res) => {
-    res.json({
-        apiKey: process.env.REPLICATE_API_KEY || ''
-    });
+// Health check
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', apiKey: process.env.REPLICATE_API_KEY ? 'loaded' : 'missing' });
+});
+
+// Get API key endpoint
+app.get('/api/key', (req, res) => {
+    const apiKey = process.env.REPLICATE_API_KEY;
+    if (!apiKey) {
+        return res.status(500).json({ error: 'API key not configured' });
+    }
+    res.json({ key: apiKey });
+});
+
+// Proxy endpoint for Replicate API
+app.post('/api/replicate', async (req, res) => {
+    const apiKey = process.env.REPLICATE_API_KEY;
+    
+    if (!apiKey) {
+        console.error('❌ API Key not found in environment variables');
+        return res.status(500).json({ error: 'API key not configured on server' });
+    }
+
+    const { url, method, body } = req.body;
+
+    try {
+        // Dynamic import for node-fetch
+        const fetch = (await import('node-fetch')).default;
+        
+        console.log(`📡 Making ${method} request to: ${url}`);
+        
+        const options = {
+            method: method || 'POST',
+            headers: {
+                'Authorization': `Token ${apiKey}`,
+                'Content-Type': 'application/json',
+                'User-Agent': 'REALISTIC-IMAGE-ENGINE/1.0'
+            }
+        };
+
+        if (body && method === 'POST') {
+            options.body = JSON.stringify(body);
+        }
+
+        const response = await fetch(url, options);
+        const data = await response.json();
+
+        console.log(`✅ Response status: ${response.status}`);
+
+        if (!response.ok) {
+            console.error('❌ Replicate API Error:', data);
+            return res.status(response.status).json(data);
+        }
+
+        res.json(data);
+    } catch (error) {
+        console.error('❌ Server Error:', error.message);
+        res.status(500).json({ 
+            error: 'Server error', 
+            message: error.message,
+            details: error.toString()
+        });
+    }
 });
 
 // Serve index.html for all other routes
@@ -25,5 +83,10 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`🚀 REALISTIC IMAGE ENGINE running on port ${PORT}`);
-    console.log(`✅ API Key: ${process.env.REPLICATE_API_KEY ? 'Loaded' : 'NOT FOUND'}`);
+    const apiKey = process.env.REPLICATE_API_KEY;
+    if (apiKey) {
+        console.log(`✅ API Key: Loaded (${apiKey.substring(0, 8)}...)`);
+    } else {
+        console.log(`❌ API Key: NOT FOUND - Please add REPLICATE_API_KEY to environment variables`);
+    }
 });
