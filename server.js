@@ -4,6 +4,7 @@ import FormData from 'form-data';
 import fetch from 'node-fetch';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { Readable } from 'stream';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,43 +29,66 @@ app.post('/api/enhance', upload.single('file'), async (req, res) => {
         // Parse operations from request
         const operations = JSON.parse(req.body.operations);
         
-        console.log('Calling Claid API with operations:', operations);
+        console.log('Calling Claid API with operations:', JSON.stringify(operations, null, 2));
         
-        // Create form data for Claid API
-        const formData = new FormData();
-        
-        // Add the image file
-        formData.append('file', req.file.buffer, {
+        // Step 1: Upload the image first
+        const uploadForm = new FormData();
+        uploadForm.append('file', req.file.buffer, {
             filename: 'image.jpg',
             contentType: req.file.mimetype
         });
         
-        // Add operations as a JSON string in the 'data' field
-        formData.append('data', JSON.stringify({
-            operations: operations
-        }));
+        console.log('Uploading image to Claid...');
         
-        // Call Claid API
-        const response = await fetch('https://api.claid.ai/v1-beta1/image/edit', {
+        const uploadResponse = await fetch('https://api.claid.ai/v1-beta1/image/upload', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
-                ...formData.getHeaders()
+                ...uploadForm.getHeaders()
             },
-            body: formData
+            body: uploadForm
         });
         
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Claid API error:', errorText);
-            return res.status(response.status).json({ 
+        if (!uploadResponse.ok) {
+            const errorText = await uploadResponse.text();
+            console.error('Upload error:', errorText);
+            return res.status(uploadResponse.status).json({ 
+                error: 'Upload failed', 
+                details: errorText 
+            });
+        }
+        
+        const uploadResult = await uploadResponse.json();
+        console.log('Upload successful, temp URL:', uploadResult.data?.tmp_upload_url);
+        
+        // Step 2: Process the uploaded image
+        const processBody = {
+            input: uploadResult.data.tmp_upload_url,
+            operations: operations
+        };
+        
+        console.log('Processing image with body:', JSON.stringify(processBody, null, 2));
+        
+        const processResponse = await fetch('https://api.claid.ai/v1-beta1/image/edit', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(processBody)
+        });
+        
+        if (!processResponse.ok) {
+            const errorText = await processResponse.text();
+            console.error('Process error:', errorText);
+            return res.status(processResponse.status).json({ 
                 error: 'Enhancement failed', 
                 details: errorText 
             });
         }
         
-        const result = await response.json();
-        console.log('Enhancement successful:', JSON.stringify(result, null, 2));
+        const result = await processResponse.json();
+        console.log('Enhancement successful!');
         
         res.json(result);
         
@@ -81,7 +105,19 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log('API Key loaded:', process.env.CLAID_API_KEY ? 'Yes' : 'No');
-});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
