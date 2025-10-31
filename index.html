@@ -3,160 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ REALISTIC IMAGE ENGINE - Professional AI Photo Enhancement</title>
+    <title>REALISTIC IMAGE ENGINE - Professional AI Enhancement</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <h1 class="logo">⚡ REALISTIC IMAGE ENGINE</h1>
-            <p class="tagline">Professional AI-Powered Photo Enhancement</p>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="container">
-        
-        <!-- Upload Section -->
-        <section id="uploadSection" class="section">
-            <div class="glass-card upload-card">
-                <div id="uploadBox" class="upload-box">
-                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="17 8 12 3 7 8"></polyline>
-                        <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
-                    <h2>Drop your image here</h2>
-                    <p>or click to browse</p>
-                    <p class="file-info">Supports: JPG, PNG, WEBP (Max 10MB)</p>
-                </div>
-                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+    <div class="container">
+        <header class="header">
+            <div class="logo-section">
+                <div class="logo-icon">✨</div>
+                <h1 class="logo-text">REALISTIC IMAGE ENGINE</h1>
             </div>
-        </section>
+            <p class="tagline">Professional AI-Powered Image Enhancement</p>
+        </header>
 
-        <!-- Preview Section -->
-        <section id="previewSection" class="section" style="display: none;">
-            <div class="preview-grid">
-                <!-- Original Image -->
-                <div class="glass-card preview-card">
-                    <h3 class="card-title">Original Image</h3>
-                    <div class="image-container">
-                        <img id="originalImage" src="" alt="Original">
-                    </div>
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section class="upload-section" id="uploadSection">
+                <div class="upload-card">
+                    <div class="upload-icon">📸</div>
+                    <h2>Upload Your Image</h2>
+                    <p>Transform your photos with professional AI enhancement</p>
+                    <input type="file" id="imageInput" accept="image/*" hidden>
+                    <button class="btn-primary" onclick="document.getElementById('imageInput').click()">
+                        Choose Image
+                    </button>
+                    <p class="file-info">Supports JPG, PNG, WEBP • Max 10MB</p>
                 </div>
+            </section>
 
-                <!-- Enhanced Image -->
-                <div class="glass-card preview-card">
-                    <h3 class="card-title">Enhanced Result</h3>
-                    <div id="enhancedContainer" class="image-container">
-                        <div class="placeholder-content">
-                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M12 6v6l4 2"></path>
-                            </svg>
-                            <p>Select an enhancement option below</p>
+            <!-- Enhancement Section -->
+            <section class="enhancement-section" id="enhancementSection" style="display: none;">
+                <div class="image-container">
+                    <div class="image-box">
+                        <h3>Original</h3>
+                        <img id="originalImage" alt="Original">
+                    </div>
+                    <div class="image-box">
+                        <h3>Enhanced</h3>
+                        <div id="enhancedImageContainer">
+                            <div class="placeholder">Your enhanced image will appear here</div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Enhancement Options -->
-        <section id="enhancementOptions" class="section" style="display: none;">
-            <h2 class="section-title">Choose Enhancement Type</h2>
-            <div class="options-grid">
-                <div class="glass-card option-card" data-type="skin">
-                    <div class="option-icon">🌟</div>
-                    <h3>Skin Enhancement</h3>
-                    <p>Perfect skin texture and tone</p>
-                    <span class="price-tag">$0.02/image</span>
+                <div class="controls-card">
+                    <h3>Enhancement Options</h3>
+                    <div class="enhancement-grid">
+                        <button class="enhancement-btn" onclick="enhance('face')">
+                            <span class="btn-icon">👤</span>
+                            <span class="btn-text">Face Enhancement</span>
+                            <span class="btn-desc">Perfect for portraits</span>
+                        </button>
+                        <button class="enhancement-btn" onclick="enhance('photo')">
+                            <span class="btn-icon">📷</span>
+                            <span class="btn-text">Photo Enhancement</span>
+                            <span class="btn-desc">Professional quality</span>
+                        </button>
+                        <button class="enhancement-btn" onclick="enhance('smart')">
+                            <span class="btn-icon">🧠</span>
+                            <span class="btn-text">Smart Enhancement</span>
+                            <span class="btn-desc">AI-powered optimization</span>
+                        </button>
+                        <button class="enhancement-btn" onclick="enhance('ultimate')">
+                            <span class="btn-icon">⚡</span>
+                            <span class="btn-text">Ultimate Enhancement</span>
+                            <span class="btn-desc">Maximum quality</span>
+                        </button>
+                    </div>
+                    <button class="btn-secondary" onclick="resetUpload()">Upload New Image</button>
                 </div>
 
-                <div class="glass-card option-card" data-type="upscale">
-                    <div class="option-icon">🔍</div>
-                    <h3>4K Upscale</h3>
-                    <p>Increase resolution to 4K quality</p>
-                    <span class="price-tag">$0.03/image</span>
+                <!-- Loading Overlay -->
+                <div class="loading-overlay" id="loadingOverlay">
+                    <div class="loading-spinner"></div>
+                    <p>Enhancing your image...</p>
                 </div>
+            </section>
+        </main>
 
-                <div class="glass-card option-card" data-type="enhance">
-                    <div class="option-icon">✨</div>
-                    <h3>Ultimate Enhancement</h3>
-                    <p>Complete photo transformation</p>
-                    <span class="price-tag">$0.04/image</span>
-                </div>
-
-                <div class="glass-card option-card" data-type="face">
-                    <div class="option-icon">👤</div>
-                    <h3>Face Restoration</h3>
-                    <p>Restore and enhance facial details</p>
-                    <span class="price-tag">$0.02/image</span>
-                </div>
-
-                <div class="glass-card option-card" data-type="denoise">
-                    <div class="option-icon">🎨</div>
-                    <h3>Denoise & Sharpen</h3>
-                    <p>Remove noise and enhance clarity</p>
-                    <span class="price-tag">$0.03/image</span>
-                </div>
-
-                <div class="glass-card option-card" data-type="combo">
-                    <div class="option-icon">💎</div>
-                    <h3>Combo Enhancement</h3>
-                    <p>All enhancements combined</p>
-                    <span class="price-tag">$0.05/image</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Loading State -->
-        <section id="loading" class="section" style="display: none;">
-            <div class="glass-card loading-card">
-                <div class="spinner"></div>
-                <h3>Enhancing Your Image...</h3>
-                <p>This may take 10-30 seconds. Please wait.</p>
-            </div>
-        </section>
-
-        <!-- Download Section -->
-        <section id="downloadSection" class="section" style="display: none;">
-            <div class="glass-card download-card">
-                <h3>✨ Enhancement Complete!</h3>
-                <div class="button-group">
-                    <button id="downloadBtn" class="btn btn-primary">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        Download Enhanced Image
-                    </button>
-                    <button id="newImageBtn" class="btn btn-secondary">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="1 4 1 10 7 10"></polyline>
-                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
-                        </svg>
-                        Enhance Another Image
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Error Message -->
-        <section id="errorMessage" class="section" style="display: none;">
-            <!-- Error content will be inserted here by JavaScript -->
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 REALISTIC IMAGE ENGINE. Powered by Professional AI Models.</p>
-        </div>
-    </footer>
+        <footer class="footer">
+            <p>© 2025 REALISTIC IMAGE ENGINE • Powered by Advanced AI</p>
+        </footer>
+    </div>
 
     <script src="script.js"></script>
 </body>
-</html>
+</html>                                                            
+  
+  
+  
