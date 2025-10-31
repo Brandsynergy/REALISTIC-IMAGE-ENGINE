@@ -1,5 +1,9 @@
-const express = require('express');
-const path = require('path');
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -9,7 +13,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Serve static files
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(__dirname));
 
 // Health check
 app.get('/health', (req, res) => {
@@ -37,7 +41,6 @@ app.post('/api/replicate', async (req, res) => {
     const { url, method, body } = req.body;
 
     try {
-        // Dynamic import for node-fetch
         const fetch = (await import('node-fetch')).default;
         
         console.log(`📡 Making ${method} request to: ${url}`);
@@ -89,4 +92,25 @@ app.listen(PORT, () => {
     } else {
         console.log(`❌ API Key: NOT FOUND - Please add REPLICATE_API_KEY to environment variables`);
     }
-});
+});                                                                                                                                                                                                                                                                                                                                                                                                                                 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
