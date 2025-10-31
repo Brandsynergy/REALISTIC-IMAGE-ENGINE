@@ -1,32 +1,27 @@
 // ============================================
-// REALISTIC IMAGE ENGINE - SECURE VERSION
-// API Key loaded from server environment
+// REALISTIC IMAGE ENGINE - FINAL VERSION
 // ============================================
 
-// 🔑 CONFIGURATION
-let CONFIG = {
-    REPLICATE_API_KEY: '',
-    
+console.log('%c⚡ REALISTIC IMAGE ENGINE', 'color: #667eea; font-size: 20px; font-weight: bold;');
+
+// Configuration
+const CONFIG = {
     MODELS: {
-        skin: 'tencentarc/gfpgan:9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3',
-        upscale: 'nightmareai/real-esrgan:42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b',
-        enhance: 'nightmareai/real-esrgan:42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b',
-        face: 'tencentarc/gfpgan:9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3',
-        denoise: 'sczhou/codeformer:7de2ea26c616d5bf2245ad0d5e24f0ff9a6204578a5c876db53142edd9d2cd56',
-        combo: 'sczhou/codeformer:7de2ea26c616d5bf2245ad0d5e24f0ff9a6204578a5c876db53142edd9d2cd56'
+        skin: '9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3',
+        upscale: '42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b',
+        enhance: '42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b',
+        face: '9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3',
+        denoise: '7de2ea26c616d5bf2245ad0d5e24f0ff9a6204578a5c876db53142edd9d2cd56',
+        combo: '7de2ea26c616d5bf2245ad0d5e24f0ff9a6204578a5c876db53142edd9d2cd56'
     }
 };
 
-// ============================================
-// GLOBAL STATE
-// ============================================
+// Global state
 let uploadedImage = null;
 let enhancedImageUrl = null;
-let apiKeyLoaded = false;
+let API_KEY = null;
 
-// ============================================
-// DOM ELEMENTS
-// ============================================
+// DOM Elements
 const uploadBox = document.getElementById('uploadBox');
 const fileInput = document.getElementById('fileInput');
 const uploadSection = document.getElementById('uploadSection');
@@ -41,22 +36,29 @@ const newImageBtn = document.getElementById('newImageBtn');
 const errorMessage = document.getElementById('errorMessage');
 
 // ============================================
-// LOAD API KEY FROM SERVER
+// LOAD API KEY
 // ============================================
 async function loadAPIKey() {
     try {
-        const response = await fetch('/api/config');
+        console.log('🔑 Loading API key from server...');
+        const response = await fetch('/api/key');
+        
+        if (!response.ok) {
+            throw new Error('Failed to load API key from server');
+        }
+        
         const data = await response.json();
-        CONFIG.REPLICATE_API_KEY = data.apiKey;
-        apiKeyLoaded = true;
-        console.log('%c🔑 API Key loaded securely from environment!', 'color: #4ade80; font-size: 14px; font-weight: bold;');
+        API_KEY = data.key;
+        console.log('✅ API Key loaded successfully!');
+        return true;
     } catch (error) {
-        console.error('Failed to load API key:', error);
-        apiKeyLoaded = false;
+        console.error('❌ Failed to load API key:', error);
+        showError('⚠️ Failed to load API configuration. Please refresh the page.');
+        return false;
     }
 }
 
-// Load API key when page loads
+// Load API key on page load
 loadAPIKey();
 
 // ============================================
@@ -108,15 +110,13 @@ newImageBtn.addEventListener('click', resetApp);
 // ============================================
 
 function handleImageUpload(file) {
-    // Validate file size
     if (file.size > 10 * 1024 * 1024) {
-        showError('Image size must be less than 10MB. Please choose a smaller image.');
+        showError('Image size must be less than 10MB');
         return;
     }
 
-    // Validate file type
     if (!file.type.match('image.*')) {
-        showError('Please upload a valid image file.');
+        showError('Please upload a valid image file');
         return;
     }
 
@@ -125,14 +125,12 @@ function handleImageUpload(file) {
         uploadedImage = e.target.result;
         originalImage.src = uploadedImage;
         
-        // Show preview and options with smooth transition
         uploadSection.style.display = 'none';
         previewSection.style.display = 'block';
         enhancementOptions.style.display = 'block';
         
         hideError();
         
-        // Smooth scroll to options
         setTimeout(() => {
             enhancementOptions.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }, 300);
@@ -141,51 +139,48 @@ function handleImageUpload(file) {
 }
 
 async function enhanceImage(type) {
-    // Check if API key is loaded
-    if (!apiKeyLoaded || !CONFIG.REPLICATE_API_KEY) {
-        showError('⚠️ API Key not loaded. Please refresh the page or check your Render Environment Variables.');
-        return;
+    if (!API_KEY) {
+        const loaded = await loadAPIKey();
+        if (!loaded) {
+            showError('⚠️ API Key not available. Please check your Render environment variables.');
+            return;
+        }
     }
 
-    // Show loading state
     loading.style.display = 'block';
     enhancementOptions.style.display = 'none';
     downloadSection.style.display = 'none';
     hideError();
 
-    // Scroll to loading
     setTimeout(() => {
         loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 100);
 
     try {
-        // Convert image to blob
-        const blob = await fetch(uploadedImage).then(r => r.blob());
-        const imageUrl = await uploadImageToReplicate(blob);
+        console.log(`🎨 Starting ${type} enhancement...`);
         
-        // Get model and create prediction
         const modelVersion = CONFIG.MODELS[type];
-        const prediction = await createPrediction(modelVersion, imageUrl, type);
+        const prediction = await createPrediction(modelVersion, uploadedImage, type);
         
-        // Wait for result
+        console.log('⏳ Waiting for enhancement to complete...');
         const result = await waitForPrediction(prediction.id);
         
-        // Display enhanced image
+        console.log('✅ Enhancement complete!');
         displayEnhancedImage(result.output);
         
     } catch (error) {
-        console.error('Enhancement error:', error);
+        console.error('❌ Enhancement error:', error);
         
-        // More detailed error message
-        let errorMsg = 'Enhancement failed. ';
-        if (error.message.includes('Failed to fetch')) {
-            errorMsg += 'Network error - please check your internet connection and API key.';
+        let errorMsg = '⚠️ Enhancement failed. ';
+        
+        if (error.message.includes('402')) {
+            errorMsg = '💳 Insufficient credits on your Replicate account. Please add credits at replicate.com/account/billing';
         } else if (error.message.includes('401') || error.message.includes('403')) {
-            errorMsg += 'Invalid API key. Please check your Replicate API key in Render Environment Variables.';
+            errorMsg = '🔑 Invalid API key. Please check your REPLICATE_API_KEY in Render environment variables.';
         } else if (error.message.includes('429')) {
-            errorMsg += 'Rate limit exceeded. Please wait a moment and try again.';
-        } else if (error.message.includes('402')) {
-            errorMsg += 'Insufficient credits. Please add credits to your Replicate account.';
+            errorMsg = '⏱️ Rate limit exceeded. Please wait a moment and try again.';
+        } else if (error.message.includes('timeout')) {
+            errorMsg = '⏱️ Enhancement timed out. Please try with a smaller image.';
         } else {
             errorMsg += error.message;
         }
@@ -197,19 +192,9 @@ async function enhanceImage(type) {
     }
 }
 
-async function uploadImageToReplicate(blob) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-    });
-}
-
 async function createPrediction(modelVersion, imageUrl, type) {
     let inputParams = { image: imageUrl };
 
-    // Configure parameters based on enhancement type
     switch(type) {
         case 'upscale':
             inputParams.scale = 4;
@@ -237,37 +222,32 @@ async function createPrediction(modelVersion, imageUrl, type) {
             inputParams.face_enhance = true;
     }
 
-    try {
-        const response = await fetch('https://api.replicate.com/v1/predictions', {
+    console.log('📤 Sending request to server proxy...');
+
+    const response = await fetch('/api/replicate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            url: 'https://api.replicate.com/v1/predictions',
             method: 'POST',
-            headers: {
-                'Authorization': `Token ${CONFIG.REPLICATE_API_KEY}`,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
+            body: {
                 version: modelVersion,
                 input: inputParams
-            }),
-            mode: 'cors'
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            let errorData;
-            try {
-                errorData = JSON.parse(errorText);
-            } catch {
-                throw new Error(`HTTP ${response.status}: ${errorText}`);
             }
-            throw new Error(errorData.detail || errorData.error || `HTTP ${response.status}`);
-        }
+        })
+    });
 
-        return await response.json();
-    } catch (error) {
-        console.error('API Error:', error);
-        throw error;
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Server response error:', errorData);
+        throw new Error(errorData.error || errorData.detail || `Server error: ${response.status}`);
     }
+
+    const data = await response.json();
+    console.log('✅ Prediction created:', data.id);
+    return data;
 }
 
 async function waitForPrediction(predictionId) {
@@ -275,43 +255,41 @@ async function waitForPrediction(predictionId) {
     let attempts = 0;
 
     while (attempts < maxAttempts) {
-        try {
-            const response = await fetch(`https://api.replicate.com/v1/predictions/${predictionId}`, {
-                headers: {
-                    'Authorization': `Token ${CONFIG.REPLICATE_API_KEY}`,
-                    'Accept': 'application/json'
-                },
-                mode: 'cors'
-            });
+        const response = await fetch('/api/replicate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                url: `https://api.replicate.com/v1/predictions/${predictionId}`,
+                method: 'GET'
+            })
+        });
 
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: Failed to check prediction status`);
-            }
-
-            const prediction = await response.json();
-
-            if (prediction.status === 'succeeded') {
-                return prediction;
-            }
-
-            if (prediction.status === 'failed') {
-                throw new Error(prediction.error || 'Enhancement failed on server. Please try again.');
-            }
-
-            if (prediction.status === 'canceled') {
-                throw new Error('Enhancement was canceled. Please try again.');
-            }
-
-            // Wait 1 second before checking again
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            attempts++;
-        } catch (error) {
-            console.error('Polling error:', error);
-            throw error;
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `Failed to check status: ${response.status}`);
         }
+
+        const prediction = await response.json();
+
+        if (prediction.status === 'succeeded') {
+            return prediction;
+        }
+
+        if (prediction.status === 'failed') {
+            throw new Error(prediction.error || 'Enhancement failed');
+        }
+
+        if (prediction.status === 'canceled') {
+            throw new Error('Enhancement was canceled');
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        attempts++;
     }
 
-    throw new Error('Enhancement timed out. Please try again with a smaller image.');
+    throw new Error('Enhancement timed out after 60 seconds');
 }
 
 function displayEnhancedImage(outputUrl) {
@@ -323,7 +301,6 @@ function displayEnhancedImage(outputUrl) {
     downloadSection.style.display = 'block';
     enhancementOptions.style.display = 'block';
     
-    // Scroll to result
     setTimeout(() => {
         downloadSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 300);
@@ -341,20 +318,12 @@ function downloadImage() {
 }
 
 function showError(message) {
-    const errorCard = errorMessage.querySelector('.error-card');
-    const errorText = errorCard ? errorCard.querySelector('.error-text') : null;
-    
-    if (errorText) {
-        errorText.textContent = message;
-    } else {
-        errorMessage.innerHTML = `
-            <div class="glass-card error-card">
-                <div class="error-icon">⚠️</div>
-                <p class="error-text">${message}</p>
-            </div>
-        `;
-    }
-    
+    errorMessage.innerHTML = `
+        <div class="glass-card" style="padding: 2rem; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+            <p style="font-size: 1.1rem; color: #ff6b6b; margin: 0;">${message}</p>
+        </div>
+    `;
     errorMessage.style.display = 'block';
     
     setTimeout(() => {
@@ -388,14 +357,14 @@ function resetApp() {
     `;
     
     hideError();
-    
-    // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ============================================
-// INITIALIZATION
-// ============================================
-console.log('%c⚡ REALISTIC IMAGE ENGINE', 'color: #667eea; font-size: 20px; font-weight: bold;');
-console.log('%c✅ Professional AI Models Loaded', 'color: #4ade80; font-size: 14px;');
-console.log('%c🔄 Loading API key from secure environment...', 'color: #f093fb; font-size: 14px;');
+console.log('✅ Script loaded successfully');                                                                                                                                            
+  
+  
+  
+  
+  
+  
+  
