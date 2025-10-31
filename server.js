@@ -1,6 +1,5 @@
 import express from 'express';
 import multer from 'multer';
-import FormData from 'form-data';
 import fetch from 'node-fetch';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -25,27 +24,28 @@ app.post('/api/enhance', upload.single('file'), async (req, res) => {
         
         console.log('Received enhancement request');
         
-        // Create form data for Claid API
-        const formData = new FormData();
-        formData.append('file', req.file.buffer, {
-            filename: 'image.jpg',
-            contentType: req.file.mimetype
-        });
-        
         // Parse operations from request
         const operations = JSON.parse(req.body.operations);
-        formData.append('data', JSON.stringify({ operations }));
         
         console.log('Calling Claid API with operations:', operations);
+        
+        // Convert image buffer to base64
+        const base64Image = req.file.buffer.toString('base64');
+        
+        // Create the request body for Claid API
+        const requestBody = {
+            input: `data:${req.file.mimetype};base64,${base64Image}`,
+            operations: operations
+        };
         
         // Call Claid API
         const response = await fetch('https://api.claid.ai/v1-beta1/image/edit', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
-                ...formData.getHeaders()
+                'Content-Type': 'application/json'
             },
-            body: formData
+            body: JSON.stringify(requestBody)
         });
         
         if (!response.ok) {
@@ -75,7 +75,11 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log('API Key loaded:', process.env.CLAID_API_KEY ? 'Yes' : 'No');
-});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+  
+  
+  
+  
   
   
   
