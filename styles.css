@@ -5,287 +5,318 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     padding: 20px;
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
-header {
+/* Header */
+.header {
     text-align: center;
-    color: white;
     margin-bottom: 40px;
+    animation: fadeInDown 0.8s ease;
 }
 
-header h1 {
-    font-size: 3rem;
+.logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
     margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    letter-spacing: 2px;
 }
 
-.subtitle {
-    font-size: 1.2rem;
-    opacity: 0.95;
+.logo-icon {
+    font-size: 48px;
+    animation: pulse 2s infinite;
+}
+
+.logo-text {
+    font-size: 42px;
+    font-weight: 800;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.tagline {
+    color: rgba(255,255,255,0.9);
+    font-size: 18px;
     font-weight: 300;
 }
 
 /* Upload Section */
 .upload-section {
-    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    animation: fadeIn 1s ease;
 }
 
-.upload-box {
-    background: white;
-    border: 3px dashed #2a5298;
-    border-radius: 20px;
-    padding: 60px 40px;
+.upload-card {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 60px 80px;
     text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
 }
 
-.upload-box:hover {
-    border-color: #7e22ce;
+.upload-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-.upload-box svg {
-    color: #2a5298;
+.upload-icon {
+    font-size: 80px;
     margin-bottom: 20px;
 }
 
-.upload-box h3 {
-    font-size: 1.5rem;
+.upload-card h2 {
+    font-size: 32px;
     color: #333;
     margin-bottom: 10px;
 }
 
-.upload-box p {
+.upload-card p {
     color: #666;
-    font-size: 1rem;
+    font-size: 16px;
+    margin-bottom: 30px;
 }
 
-/* Preview Section */
-.preview-section {
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 18px 50px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(102,126,234,0.6);
+}
+
+.file-info {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #999;
+}
+
+/* Enhancement Section */
+.enhancement-section {
+    animation: fadeIn 0.8s ease;
+}
+
+.image-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 30px;
     margin-bottom: 40px;
 }
 
-.image-container {
-    background: white;
+.image-box {
+    background: rgba(255,255,255,0.95);
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
 }
 
-.image-container h3 {
+.image-box h3 {
     color: #333;
     margin-bottom: 15px;
-    text-align: center;
-    font-size: 1.2rem;
+    font-size: 20px;
 }
 
-.image-container img {
+.image-box img {
     width: 100%;
-    height: auto;
-    border-radius: 10px;
+    border-radius: 12px;
     display: block;
 }
 
-#enhancedContainer {
-    min-height: 300px;
+#enhancedImageContainer {
+    min-height: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #f5f5f5;
-    border-radius: 10px;
+    border-radius: 12px;
 }
 
-.placeholder-text {
+.placeholder {
     color: #999;
     text-align: center;
-    padding: 20px;
+    padding: 40px;
 }
 
-/* Enhancement Options */
-.enhancement-options {
-    background: white;
+/* Controls */
+.controls-card {
+    background: rgba(255,255,255,0.95);
     border-radius: 20px;
     padding: 40px;
-    margin-bottom: 40px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
 }
 
-.enhancement-options h2 {
-    text-align: center;
+.controls-card h3 {
     color: #333;
-    margin-bottom: 30px;
-    font-size: 2rem;
+    margin-bottom: 25px;
+    font-size: 24px;
+    text-align: center;
 }
 
-.options-grid {
+.enhancement-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
+    margin-bottom: 30px;
 }
 
-.option-card {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+.enhancement-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
     border: none;
-    border-radius: 15px;
-    padding: 30px 20px;
+    padding: 25px;
+    border-radius: 16px;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: white;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 5px 20px rgba(102,126,234,0.3);
 }
 
-.option-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(126, 34, 206, 0.5);
+.enhancement-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(102,126,234,0.5);
 }
 
-.option-card .icon {
-    font-size: 3rem;
-    margin-bottom: 15px;
+.btn-icon {
+    font-size: 36px;
 }
 
-.option-card h3 {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
+.btn-text {
+    font-size: 16px;
+    font-weight: 600;
 }
 
-.option-card p {
-    font-size: 0.9rem;
+.btn-desc {
+    font-size: 13px;
     opacity: 0.9;
-    margin-bottom: 15px;
 }
 
-.option-card .tech {
-    display: block;
-    font-size: 0.75rem;
-    opacity: 0.8;
-    font-weight: bold;
-    font-style: italic;
-}
-
-/* Loading */
-.loading {
+.btn-secondary {
+    width: 100%;
     background: white;
-    border-radius: 20px;
-    padding: 60px 40px;
-    text-align: center;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    color: #667eea;
+    border: 2px solid #667eea;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.spinner {
+.btn-secondary:hover {
+    background: #667eea;
+    color: white;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.loading-spinner {
     width: 60px;
     height: 60px;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #2a5298;
+    border: 5px solid rgba(255,255,255,0.3);
+    border-top-color: white;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
+}
+
+.loading-overlay p {
+    color: white;
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    margin-top: 60px;
+    color: rgba(255,255,255,0.8);
+    font-size: 14px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.loading p {
-    color: #333;
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-}
-
-.loading-subtext {
-    color: #666;
-    font-size: 0.9rem;
-}
-
-/* Download Section */
-.download-section {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.download-btn {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 18px 40px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.download-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(126, 34, 206, 0.5);
-}
-
-.secondary-btn {
-    background: white;
-    color: #2a5298;
-    border: 2px solid #2a5298;
-    border-radius: 50px;
-    padding: 15px 35px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-block;
-    margin-left: 15px;
-}
-
-.secondary-btn:hover {
-    background: #2a5298;
-    color: white;
-}
-
-/* Error Message */
-.error-message {
-    background: #ff4757;
-    color: white;
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    margin-bottom: 20px;
-    box-shadow: 0 5px 20px rgba(255, 71, 87, 0.3);
+    to { transform: rotate(360deg); }
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    header h1 {
-        font-size: 2rem;
+    .logo-text {
+        font-size: 28px;
     }
     
-    .preview-section {
+    .upload-card {
+        padding: 40px 30px;
+    }
+    
+    .image-container {
         grid-template-columns: 1fr;
     }
     
-    .options-grid {
+    .enhancement-grid {
         grid-template-columns: 1fr;
     }
-    
-    .secondary-btn {
-        margin-left: 0;
-        margin-top: 10px;
-    }
-}
+}                                                                                                    
+  
+  
+  
+  
+  
